@@ -1,0 +1,17 @@
+{
+  "name": "cachecomm",
+  "description": "Community cache server",
+  "keywords": [
+    "community",
+    "cache"
+  ],
+  "website": "https://cache.community.xyz/",
+  "dokku":{
+    "plugins":[
+      "redis"
+    ],
+    "volumes":[
+      {"host":"/images/$APP/storage","app":"/storage"}
+    ]
+  }
+}
