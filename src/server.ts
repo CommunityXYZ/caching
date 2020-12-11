@@ -1,9 +1,13 @@
-import { TedisPool } from "tedis";
-import express from 'express';
 import cluster from 'cluster';
 import morgan from 'morgan';
-import * as os from 'os';
+import os from 'os';
+import compression from 'compression';
 import bodyParser from "body-parser";
+import helmet from 'helmet';
+import App from "./app";
+import HomeController from "./controllers/home";
+import { TedisPool } from "tedis";
+import ContractController from './controllers/contract';
 
 const regex = /\/\/([^:]+):([^@]+)@([^:]+):([^/]+)/gm;
 const str = process.env.REDIS_URL;
@@ -16,7 +20,6 @@ const tedispool = new TedisPool({
   port: +resArr[4]
 });
 
-const app = express();
 const workers = [];
 
 const setupWorkerProcesses = () => {
@@ -49,22 +52,33 @@ const setupWorkerProcesses = () => {
       console.log(msg);
     });
   });
+
+  process.on("SIGHUP", function () {
+    for (const worker of Object.values(workers)) {
+      worker.process.kill("SIGTERM");
+    }
+  });
 };
 
 const setupExpress = () => {
-  app.use(morgan('tiny'));
-  app.use(bodyParser.json());
-  app.disable('x-powered-by');
-
-  app.listen(8080, () => {
-    console.log(`Started server on => http://localhost:8080, from process: ${process.pid}`);
+  const app = new App({
+    port: 8080,
+    controllers: [
+      new HomeController(),
+      new ContractController(tedispool)
+    ],
+    middleWares: [
+      morgan('tiny'),
+      bodyParser.json(),
+      bodyParser.urlencoded({extended: true}),
+      compression(),
+      helmet()
+    ]
   });
 
-  app.on('error', () => {
-    console.error('app error', app.stack);
-    console.error('on url', app.request.url);
-    console.error('with headers', app.request.header);
-  });
+  app.listen();
+
+  process.on("SIGHUP", function() {});
 };
 
 if(cluster.isMaster) {

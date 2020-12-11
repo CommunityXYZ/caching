@@ -1,14 +1,17 @@
 {
-  "name": "cachecomm",
-  "description": "Community cache server",
+  "name": "speedweave",
+  "description": "Arweave caching server for SmartWeave contracts.",
   "keywords": [
-    "community",
-    "cache"
+    "arweave",
+    "speed",
+    "cache",
+    "community"
   ],
   "website": "https://cache.community.xyz/",
   "dokku":{
     "plugins":[
-      "redis"
+      "redis",
+      "letsencrypt"
     ],
     "volumes":[
       {"host":"/images/$APP/storage","app":"/storage"}
