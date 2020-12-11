@@ -13,21 +13,6 @@ export default class HomeController {
   }
 
   private index(req: express.Request, res: express.Response) {
-    const users = [
-      {
-          id: 1,
-          name: 'Ali'
-      },
-      {
-          id: 2,
-          name: 'Can'
-      },
-      {
-          id: 3,
-          name: 'Ahmet'
-      }
-  ]
-
-    res.send({ users });
+    res.send('hello-world');
   }
 }
