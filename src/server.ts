@@ -56,7 +56,7 @@ const setupWorkerProcesses = () => {
 
 const setupExpress = () => {
   const app = new App({
-    port: 8080,
+    port: 5000,
     controllers: [
       new HomeController(),
       new ContractController(tedispool)
