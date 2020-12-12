@@ -1,12 +1,11 @@
-import cluster from 'cluster';
 import morgan from 'morgan';
-import os from 'os';
 import compression from 'compression';
 import bodyParser from "body-parser";
 import helmet from 'helmet';
+import { TedisPool } from "tedis";
+import throng from 'throng'; 
 import App from "./app";
 import HomeController from "./controllers/home";
-import { TedisPool } from "tedis";
 import ContractController from './controllers/contract';
 
 const regex = /\/\/([^:]+):([^@]+)@([^:]+):([^/]+)/gm;
@@ -22,39 +21,39 @@ const tedispool = new TedisPool({
 
 const workers = [];
 
-const setupWorkerProcesses = () => {
-  const numCores = os.cpus().length;
-  console.log(`Master cluster setting up ${numCores} workers.`);
+// const setupWorkerProcesses = () => {
+//   const numCores = os.cpus().length;
+//   console.log(`Master cluster setting up ${numCores} workers.`);
 
-  for(let i = 0; i < numCores; i++) {
-    workers.push(cluster.fork());
+//   for(let i = 0; i < numCores; i++) {
+//     workers.push(cluster.fork());
 
-    workers[i].on('message', (msg: any) => {
-      console.log(msg);
-    });
-  }
+//     workers[i].on('message', (msg: any) => {
+//       console.log(msg);
+//     });
+//   }
 
-  cluster.on('online', (worker) => {
-    console.log(`Worker ${worker.process.pid} is listening.`);
-  });
+//   cluster.on('online', (worker) => {
+//     console.log(`Worker ${worker.process.pid} is listening.`);
+//   });
 
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died with code: ${code}, and signal: ${signal}`);
-    const index = workers.findIndex((w: cluster.Worker) => {
-      return w.process.pid === worker.process.pid;
-    });
-    if(index >= 0) workers.splice(index, 1);
+//   cluster.on('exit', (worker, code, signal) => {
+//     console.log(`Worker ${worker.process.pid} died with code: ${code}, and signal: ${signal}`);
+//     const index = workers.findIndex((w: cluster.Worker) => {
+//       return w.process.pid === worker.process.pid;
+//     });
+//     if(index >= 0) workers.splice(index, 1);
 
-    console.log(`Starting a new worker...`);
-    workers.push(cluster.fork());
+//     console.log(`Starting a new worker...`);
+//     workers.push(cluster.fork());
 
-    workers[workers.length - 1].on('message', (msg: any) => {
-      console.log(msg);
-    });
-  });
-};
+//     workers[workers.length - 1].on('message', (msg: any) => {
+//       console.log(msg);
+//     });
+//   });
+// };
 
-const setupExpress = () => {
+const start = () => {
   const app = new App({
     port: 5000,
     controllers: [
@@ -73,8 +72,9 @@ const setupExpress = () => {
   app.listen();
 };
 
-if(cluster.isMaster) {
-  setupWorkerProcesses();
-} else {
-  setupExpress();
-}
+const WORKERS = process.env.WEB_CONCURRENCY || 1;
+throng({
+  workers: WORKERS,
+  lifetime: Infinity,
+  worker: start
+});

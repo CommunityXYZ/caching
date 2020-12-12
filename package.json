@@ -22,6 +22,7 @@
     "@types/express": "^4.17.9",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.11",
+    "@types/throng": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
     "dotenv": "^8.2.0",
@@ -43,6 +44,7 @@
     "helmet": "^4.2.0",
     "morgan": "^1.10.0",
     "smartweave": "^0.4.13",
-    "tedis": "^0.1.12"
+    "tedis": "^0.1.12",
+    "throng": "^5.0.0"
   }
 }
