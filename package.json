@@ -6,6 +6,7 @@
   "author": "Cedrik <cedrik.git@tryninja.io>",
   "license": "MIT",
   "scripts": {
+    "start": "node dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' -r dotenv/config src/server.ts",
     "build": "tsc -p .",
     "lint": "eslint \"src/**/*.ts\"",

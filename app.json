@@ -15,11 +15,5 @@
     "volumes":[
       {"host":"/home/dokku/images/$APP/storage","app":"/storage"}
     ]
-  },
-  "scripts": {
-    "dokku": {
-      "predeploy": "yarn build",
-      "postdeploy": "yarn start"
-    }
   }
 }
