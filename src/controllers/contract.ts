@@ -24,39 +24,45 @@ export default class ContractController {
   }
 
   private initRoutes() {
-    this.router.get(`${this.path}/:contractId?/:height?`, this.index);
+    this.router.get(`${this.path}/:contractId?/:height?`, (req, res) => {
+      this.index(req, res);
+    });
   }
 
   private async index(req: express.Request, res: express.Response) {
-
     const contract = req.params.contractId;
     const height = +(req.params.height || (await this.arweave.network.getInfo()).height);
 
-    if(!contract) {
+    if(!contract || !/[a-z0-9_-]{43}/i.test(contract)) {
       return res.redirect('/');
     }
+
+    const cacheKey = `smartweave-${contract}-${height}`;
 
     const client = await this.tedisPool.getTedis();
     const latest = await this.latestInteraction(contract, height);
 
-    const result = await client.get('smartweave-state');
+    const result = await client.get(cacheKey);
     if(result) {
       const cache = JSON.parse(result.toString());
+
       if(cache.latest === latest) {
         this.tedisPool.putTedis(client);
         this.tedisPool.release();
 
-        return cache.state;
+        console.log('From cache!');
+        return res.json(cache.state);
       }
     }
 
     const state = await readContract(this.arweave, contract, height);
-    await client.set('smartweave-state', JSON.stringify({latest, state}));
+    await client.set(cacheKey, JSON.stringify({latest, state}));
 
     this.tedisPool.putTedis(client);
     this.tedisPool.release();
 
-    return state;
+    console.log('Not from cache!');
+    return res.json(state);
   }
 
   async latestInteraction (

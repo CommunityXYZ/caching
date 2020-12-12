@@ -52,12 +52,6 @@ const setupWorkerProcesses = () => {
       console.log(msg);
     });
   });
-
-  process.on("SIGHUP", function () {
-    for (const worker of Object.values(workers)) {
-      worker.process.kill("SIGTERM");
-    }
-  });
 };
 
 const setupExpress = () => {
@@ -77,8 +71,6 @@ const setupExpress = () => {
   });
 
   app.listen();
-
-  process.on("SIGHUP", function() {});
 };
 
 if(cluster.isMaster) {
