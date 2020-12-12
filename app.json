@@ -10,8 +10,7 @@
   "website": "https://cache.community.xyz/",
   "dokku":{
     "plugins":[
-      "redis",
-      "letsencrypt"
+      "redis"
     ],
     "volumes":[
       {"host":"/images/$APP/storage","app":"/storage"}
