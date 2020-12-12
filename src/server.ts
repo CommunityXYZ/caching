@@ -3,7 +3,8 @@ import compression from 'compression';
 import bodyParser from "body-parser";
 import helmet from 'helmet';
 import { TedisPool } from "tedis";
-import throng from 'throng'; 
+import throng from 'throng';
+import cors from 'cors';
 import App from "./app";
 import HomeController from "./controllers/home";
 import ContractController from './controllers/contract';
@@ -33,7 +34,8 @@ const worker = () => {
       bodyParser.json(),
       bodyParser.urlencoded({extended: true}),
       compression(),
-      helmet()
+      helmet(),
+      cors()
     ]
   });
 
