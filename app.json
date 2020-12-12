@@ -18,8 +18,8 @@
   },
   "scripts": {
     "dokku": {
-      "predeploy": "npm run build",
-      "postdeploy": "npm start"
+      "predeploy": "yarn build",
+      "postdeploy": "yarn start"
     }
   }
 }
