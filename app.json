@@ -13,7 +13,7 @@
       "redis"
     ],
     "volumes":[
-      {"host":"/images/$APP/storage","app":"/storage"}
+      {"host":"/home/dokku/images/$APP/storage","app":"/storage"}
     ]
   }
 }
