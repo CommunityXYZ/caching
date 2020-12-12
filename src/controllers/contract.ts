@@ -37,12 +37,13 @@ export default class ContractController {
       return res.redirect('/');
     }
 
-    const cacheKey = `smartweave-${contract}-${height}`;
-
+    
     const client = await this.tedisPool.getTedis();
     const latest = await this.latestInteraction(contract, height);
 
+    const cacheKey = `smartweave-${contract}-${latest}`;
     const result = await client.get(cacheKey);
+    
     if(result) {
       const cache = JSON.parse(result.toString());
 
