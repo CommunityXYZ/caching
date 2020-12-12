@@ -15,5 +15,11 @@
     "volumes":[
       {"host":"/home/dokku/images/$APP/storage","app":"/storage"}
     ]
+  },
+  "scripts": {
+    "dokku": {
+      "predeploy": "npm run build",
+      "postdeploy": "npm start"
+    }
   }
 }
