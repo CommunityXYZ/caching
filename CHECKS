@@ -1,5 +1,5 @@
-WAIT=20
-TIMEOUT=5
+WAIT=2
+TIMEOUT=10
 ATTEMPTS=2
 
 / hello-world
