@@ -20,8 +20,8 @@ const tedispool = new TedisPool({
   port: +resArr[4]
 });
 
-const worker = () => {
-  console.log(`Started worker ${process.pid}`);
+const worker = (id: string, disconnect: any) => {
+  console.log(`Started worker ${id}`);
 
   const app = new App({
     port: 5000,
@@ -43,14 +43,16 @@ const worker = () => {
 
  
   process.on('SIGTERM', () => {
-    console.log(`Worker ${process.pid} exiting (cleanup here)`);
-    tedispool.release();
+    console.log(`Worker ${id} exiting (cleanup here)`);
+    disconnect();
   });
 };
 
 const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
+
 throng({
   count: WORKERS,
   lifetime: Infinity,
+  // @ts-ignore
   worker
 });
