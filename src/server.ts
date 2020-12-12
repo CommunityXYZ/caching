@@ -19,41 +19,9 @@ const tedispool = new TedisPool({
   port: +resArr[4]
 });
 
-const workers = [];
+const worker = () => {
+  console.log(`Started worker ${process.pid}`);
 
-// const setupWorkerProcesses = () => {
-//   const numCores = os.cpus().length;
-//   console.log(`Master cluster setting up ${numCores} workers.`);
-
-//   for(let i = 0; i < numCores; i++) {
-//     workers.push(cluster.fork());
-
-//     workers[i].on('message', (msg: any) => {
-//       console.log(msg);
-//     });
-//   }
-
-//   cluster.on('online', (worker) => {
-//     console.log(`Worker ${worker.process.pid} is listening.`);
-//   });
-
-//   cluster.on('exit', (worker, code, signal) => {
-//     console.log(`Worker ${worker.process.pid} died with code: ${code}, and signal: ${signal}`);
-//     const index = workers.findIndex((w: cluster.Worker) => {
-//       return w.process.pid === worker.process.pid;
-//     });
-//     if(index >= 0) workers.splice(index, 1);
-
-//     console.log(`Starting a new worker...`);
-//     workers.push(cluster.fork());
-
-//     workers[workers.length - 1].on('message', (msg: any) => {
-//       console.log(msg);
-//     });
-//   });
-// };
-
-const start = () => {
   const app = new App({
     port: 5000,
     controllers: [
@@ -70,11 +38,17 @@ const start = () => {
   });
 
   app.listen();
+
+ 
+  process.on('SIGTERM', () => {
+    console.log(`Worker ${process.pid} exiting (cleanup here)`);
+    tedispool.release();
+  });
 };
 
-const WORKERS = process.env.WEB_CONCURRENCY || 1;
+const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
 throng({
-  workers: WORKERS,
+  count: WORKERS,
   lifetime: Infinity,
-  worker: start
+  worker
 });
