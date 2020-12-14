@@ -1,19 +1,16 @@
 import express from 'express';
 import { run } from 'ar-gql';
 import Arweave from 'arweave';
-import { TedisPool } from 'tedis';
 import { readContract } from 'smartweave';
+import Caching from '../models/cache';
 
 export default class ContractController {
   path = '/contract';
   router = express.Router();
 
   private arweave: Arweave;
-  private tedisPool: TedisPool;
 
-  constructor(tedispool: TedisPool) {
-    this.tedisPool = tedispool;
-
+  constructor() {
     this.arweave = Arweave.init({
       host: 'arweave.net',
       protocol: 'https',
@@ -38,29 +35,29 @@ export default class ContractController {
     }
 
     
-    const client = await this.tedisPool.getTedis();
     const latest = await this.latestInteraction(contract, height);
 
     const cacheKey = `smartweave-${contract}-${latest}`;
-    const result = await client.get(cacheKey);
+    
+    let result: string = null;
+    try {
+      result = await Caching.get(cacheKey);
+    } catch(e) { console.log(e); }
     
     if(result) {
       const cache = JSON.parse(result.toString());
 
       if(cache.latest === latest) {
-        this.tedisPool.putTedis(client);
-        this.tedisPool.release();
-
         console.log('From cache!');
         return res.json(cache.state);
       }
     }
 
     const state = await readContract(this.arweave, contract, height);
-    await client.set(cacheKey, JSON.stringify({latest, state}));
 
-    this.tedisPool.putTedis(client);
-    this.tedisPool.release();
+    try {
+      await Caching.set(cacheKey, JSON.stringify({latest, state}));
+    } catch(e) { console.log(e); }
 
     console.log('Not from cache!');
     return res.json(state);

@@ -2,23 +2,11 @@ import morgan from 'morgan';
 import compression from 'compression';
 import bodyParser from "body-parser";
 import helmet from 'helmet';
-import { TedisPool } from "tedis";
 import throng from 'throng';
 import cors from 'cors';
 import App from "./app";
 import HomeController from "./controllers/home";
 import ContractController from './controllers/contract';
-
-const regex = /\/\/([^:]+):([^@]+)@([^:]+):([^/]+)/gm;
-const str = process.env.REDIS_URL;
-
-const resArr = regex.exec(str);
-
-const tedispool = new TedisPool({
-  password: resArr[2],
-  host: resArr[3],
-  port: +resArr[4]
-});
 
 const worker = (id: string, disconnect: any) => {
   console.log(`Started worker ${id}`);
@@ -27,7 +15,7 @@ const worker = (id: string, disconnect: any) => {
     port: 5000,
     controllers: [
       new HomeController(),
-      new ContractController(tedispool)
+      new ContractController()
     ],
     middleWares: [
       morgan('tiny'),

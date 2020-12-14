@@ -9,9 +9,7 @@
   ],
   "website": "https://cache.community.xyz/",
   "dokku":{
-    "plugins":[
-      "redis"
-    ],
+    "plugins":[],
     "volumes":[
       {"host":"/home/dokku/images/$APP/storage","app":"/storage"}
     ]
