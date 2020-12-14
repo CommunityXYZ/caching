@@ -4,6 +4,8 @@ import Arweave from 'arweave';
 import { readContract } from 'smartweave';
 import Caching from '../models/cache';
 
+const cache = new Caching();
+
 export default class ContractController {
   path = '/contract';
   router = express.Router();
@@ -38,10 +40,10 @@ export default class ContractController {
     const latest = await this.latestInteraction(contract, height);
 
     const cacheKey = `smartweave-${contract}-${latest}`;
-    
+
     let result: string = null;
     try {
-      result = await Caching.get(cacheKey);
+      result = await cache.get(cacheKey);
     } catch(e) { console.log(e); }
     
     if(result) {
@@ -56,7 +58,7 @@ export default class ContractController {
     const state = await readContract(this.arweave, contract, height);
 
     try {
-      await Caching.set(cacheKey, JSON.stringify({latest, state}));
+      await cache.set(cacheKey, JSON.stringify({latest, state}));
     } catch(e) { console.log(e); }
 
     console.log('Not from cache!');
