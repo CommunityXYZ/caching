@@ -57,9 +57,7 @@ export default class ContractController {
 
     const state = await readContract(this.arweave, contract, height);
 
-    try {
-      await cache.set(cacheKey, JSON.stringify({latest, state}));
-    } catch(e) { console.log(e); }
+    cache.set(cacheKey, JSON.stringify({latest, state})).catch((e) => console.log(e));
 
     console.log('Not from cache!');
     return res.json(state);
