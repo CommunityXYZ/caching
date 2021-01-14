@@ -5,7 +5,7 @@ export default class App {
   app: Application;
   port: number;
 
-  constructor(settings: { port: number; middleWares: any; controllers: any}) {
+  constructor(settings: { port: number; middleWares: any; controllers: any }) {
     this.app = express();
     this.port = settings.port;
 
@@ -21,13 +21,13 @@ export default class App {
   }
 
   private middlewares(mws: any[]) {
-    mws.forEach(mw => {
+    mws.forEach((mw) => {
       this.app.use(mw);
     });
   }
 
   private routes(ctrls: any[]) {
-    ctrls.forEach(ctrl => {
+    ctrls.forEach((ctrl) => {
       this.app.use('/', ctrl.router);
     });
   }

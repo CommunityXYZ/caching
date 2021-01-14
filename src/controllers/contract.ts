@@ -16,7 +16,7 @@ export default class ContractController {
     this.arweave = Arweave.init({
       host: 'arweave.net',
       protocol: 'https',
-      port: 443
+      port: 443,
     });
 
     this.initRoutes();
@@ -32,11 +32,10 @@ export default class ContractController {
     const contract = req.params.contractId;
     const height = +(req.params.height || (await this.arweave.network.getInfo()).height);
 
-    if(!contract || !/[a-z0-9_-]{43}/i.test(contract)) {
+    if (!contract || !/[a-z0-9_-]{43}/i.test(contract)) {
       return res.redirect('/');
     }
 
-    
     const latest = await this.latestInteraction(contract, height);
 
     const cacheKey = `smartweave-${contract}-${latest}`;
@@ -44,12 +43,14 @@ export default class ContractController {
     let result: string = null;
     try {
       result = await cache.get(cacheKey);
-    } catch(e) { console.log(e); }
-    
-    if(result) {
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (result) {
       const cache = JSON.parse(result.toString());
 
-      if(cache.latest === latest) {
+      if (cache.latest === latest) {
         console.log('From cache!');
         return res.json(cache.state);
       }
@@ -57,16 +58,13 @@ export default class ContractController {
 
     const state = await readContract(this.arweave, contract, height);
 
-    cache.set(cacheKey, JSON.stringify({latest, state})).catch((e) => console.log(e));
+    cache.set(cacheKey, JSON.stringify({ latest, state })).catch((e) => console.log(e));
 
     console.log('Not from cache!');
     return res.json(state);
   }
 
-  async latestInteraction (
-    contract: string,
-    block: number
-  ): Promise<string> {
+  async latestInteraction(contract: string, block: number): Promise<string> {
     return (
       await run(
         `
@@ -90,8 +88,8 @@ export default class ContractController {
         {
           contract,
           block,
-        }
+        },
       )
     ).data.transactions.edges[0]?.node.id;
-  };
+  }
 }

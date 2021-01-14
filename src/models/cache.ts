@@ -6,19 +6,19 @@ export default class Caching {
 
   constructor() {
     memored.setup({
-      purgeInterval: (1000 * 60 * 60 * 24 * 7), // 7 days
+      purgeInterval: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
     new CronJob('0 */12 * * *', () => this.clearLocal(), null, true, 'America/New_York');
   }
 
   async get(key: string): Promise<string> {
-    if(this._data.has(key)) {
+    if (this._data.has(key)) {
       return this._data.get(key);
     }
 
     return new Promise((resolve, reject) => {
       memored.read(key, (err: any, val: string) => {
-        if(err) return reject(err);
+        if (err) return reject(err);
         resolve(val);
       });
     });
@@ -27,7 +27,7 @@ export default class Caching {
   async set(key: string, val: string): Promise<number> {
     return new Promise((resolve, reject) => {
       memored.store(key, val, (err: any, expTime: number) => {
-        if(err) return reject(err);
+        if (err) return reject(err);
         resolve(expTime);
 
         this._data.set(key, val);
