@@ -48,7 +48,7 @@
     "helmet": "^4.2.0",
     "memored": "^1.1.1",
     "morgan": "^1.10.0",
-    "smartweave": "^0.4.13",
+    "smartweave": "^0.4.23",
     "tedis": "^0.1.12",
     "throng": "^5.0.0"
   }

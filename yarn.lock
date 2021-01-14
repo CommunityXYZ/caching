@@ -2000,10 +2000,10 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
-smartweave@^0.4.13:
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/smartweave/-/smartweave-0.4.13.tgz#d5da11332199acd7e3548b8d553f68d52b60c0e9"
-  integrity sha512-xf+ACoQ37sejfYJvl+G4Glc69P3m5iT29kwRuC7w8rBRSdhyZeHSssJMbYpFzaQtu4AcGy1YUnyPh+1iPQv3hQ==
+smartweave@^0.4.23:
+  version "0.4.23"
+  resolved "https://registry.yarnpkg.com/smartweave/-/smartweave-0.4.23.tgz#8037102b839f4e324fe2aaa605d02e8a14bd0a50"
+  integrity sha512-vU9iAPKZRnjVaRFmRdvkAKy1e+oWYo4mj/7s36VOumYX7jceBYQPb2cwEILgghaimWpIvdHi1kcfs0zcqcNlHg==
   dependencies:
     "@weavery/clarity" "^0.1.5"
     arweave "^1.9.1"
