@@ -12,13 +12,8 @@ export default class ContractController {
 
   private arweave: Arweave;
 
-  constructor() {
-    this.arweave = Arweave.init({
-      host: 'arweave.net',
-      protocol: 'https',
-      port: 443,
-    });
-
+  constructor(arweaveInstance: Arweave) {
+    this.arweave = arweaveInstance;
     this.initRoutes();
   }
 

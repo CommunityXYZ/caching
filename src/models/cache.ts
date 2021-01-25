@@ -6,7 +6,7 @@ export default class Caching {
 
   constructor() {
     memored.setup({
-      purgeInterval: 1000 * 60 * 60 * 24 * 7, // 7 days
+      purgeInterval: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
     new CronJob('0 */12 * * *', () => this.clearLocal(), null, true, 'America/New_York');
   }
