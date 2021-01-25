@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import throng from 'throng';
 import cors from 'cors';
+import memored from 'memored';
 import App from './app';
 import HomeController from './controllers/home';
 import ContractController from './controllers/contract';
@@ -39,8 +40,11 @@ const worker = (id: string, disconnect: any) => {
   });
 };
 
-const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
+memored.setup({
+  purgeInterval: 1000 * 60 * 60 * 24 * 30, // 30 days
+});
 
+const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
 throng({
   count: WORKERS,
   lifetime: Infinity,
