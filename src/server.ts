@@ -41,7 +41,7 @@ const worker = (id: string, disconnect: any) => {
 };
 
 memored.setup({
-  purgeInterval: 1000 * 60 * 60 * 24 * 30, // 30 days
+  purgeInterval: 2147483647, // 24.8 days (max value for int)
 });
 
 const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
