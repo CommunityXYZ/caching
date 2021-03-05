@@ -3,6 +3,7 @@ import { run } from 'ar-gql';
 import Arweave from 'arweave';
 import { readContract } from 'smartweave';
 import Caching from '../models/cache';
+import Contracts from '../controllers/contracts'
 
 const cache = new Caching();
 
@@ -24,16 +25,22 @@ export default class ContractController {
   }
 
   private async index(req: express.Request, res: express.Response) {
-    const contract = req.params.contractId;
+    const contractId = req.params.contractId;
     const height = +(req.params.height || (await this.arweave.network.getInfo()).height);
 
-    if (!contract || !/[a-z0-9_-]{43}/i.test(contract)) {
+    if (!contractId || !/[a-z0-9_-]{43}/i.test(contractId)) {
       return res.redirect('/');
     }
 
-    const latest = await this.latestInteraction(contract, height);
+    const contracts= new Contracts();
+    
+    if(await contracts.isValid(contractId)===false){
+      return res.json({error: true, errorMessage: "This contract doesn't use the source from Community"});
+    }
+     
+    const latest = await this.latestInteraction(contractId, height);
 
-    const cacheKey = `smartweave-${contract}-${latest}`;
+    const cacheKey = `smartweave-${contractId}-${latest}`;
 
     let result: string = null;
     try {
@@ -51,7 +58,7 @@ export default class ContractController {
       }
     }
 
-    const state = await readContract(this.arweave, contract, height);
+    const state = await readContract(this.arweave, contractId, height);
 
     cache.set(cacheKey, JSON.stringify({ latest, state })).catch((e) => console.log(e));
 
