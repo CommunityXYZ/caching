@@ -7,7 +7,7 @@ export default class Contracts {
     this.update();
   }
 
-  async update() {
+  async update(): Promise<void> {
     console.log(`[${new Date().toLocaleString()}] Updating contracts...`);
     setTimeout(() => this.update(), 30 * 60000);
     this.contractIDs = await this.getAllFromSources();

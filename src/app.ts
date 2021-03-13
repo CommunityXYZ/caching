@@ -14,7 +14,7 @@ export default class App {
     this.assets();
   }
 
-  listen() {
+  listen(): void {
     this.app.listen(this.port, () => {
       console.log(`App listening on http://localhost:${this.port}`);
     });

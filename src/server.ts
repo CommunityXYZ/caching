@@ -9,7 +9,6 @@ import App from './app';
 import HomeController from './controllers/home';
 import ContractController from './controllers/contract';
 import Arweave from 'arweave';
-import Contracts from './controllers/contracts';
 
 const worker = (id: string, disconnect: any) => {
   console.log(`Started worker ${id}`);
