@@ -9,7 +9,7 @@ import App from './app';
 import HomeController from './controllers/home';
 import ContractController from './controllers/contract';
 import Arweave from 'arweave';
-import Contracts from './controllers/contracts'
+import Contracts from './controllers/contracts';
 
 const worker = (id: string, disconnect: any) => {
   console.log(`Started worker ${id}`);
@@ -44,10 +44,6 @@ const worker = (id: string, disconnect: any) => {
 memored.setup({
   purgeInterval: 2147483647, // 24.8 days (max value for int)
 });
-
-const contracts = new Contracts();
-contracts.update();
-
 
 const WORKERS = +(process.env.WEB_CONCURRENCY || 1);
 throng({

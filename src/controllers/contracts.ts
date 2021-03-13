@@ -1,28 +1,27 @@
-import { all } from "ar-gql";
-import memored from 'memored';
+import { all } from 'ar-gql';
 
-export default class Contracts{
-    private contractIDs:Set<string>=new Set();
-    
-      async update():Promise<number>{
-        setTimeout(()=>this.update() , 30 * 60000);
-        this.contractIDs=await this.getAllFromSources();
-        return new Promise((resolve, reject) => {  
-          memored.store('trustedContracts',this.contractIDs, (err: any, expTime: number) => {
-            if (err) return reject(err);
-            resolve(expTime);
-          });
-        });
-    }
+export default class Contracts {
+  private contractIDs: Set<string> = new Set();
 
-    async isValid(contractId:string):Promise<boolean>{
-      return this.contractIDs.has(contractId);
-    }
+  constructor() {
+    this.update();
+  }
 
-    async getAllFromSources(): Promise<Set<string>> {
-         
-        const res = await all(
-          `
+  async update() {
+    console.log(`[${new Date().toLocaleString()}] Updating contracts...`);
+    setTimeout(() => this.update(), 30 * 60000);
+    this.contractIDs = await this.getAllFromSources();
+    console.log(`[${new Date().toLocaleString()}] - Updated!`);
+  }
+
+  async isValid(contractId: string): Promise<boolean> {
+    if (!this.contractIDs.size) await this.update();
+    return this.contractIDs.has(contractId);
+  }
+
+  async getAllFromSources(): Promise<Set<string>> {
+    const res = await all(
+      `
         query($cursor: String, $sources: [String!]!) {
           transactions(
             tags: [
@@ -44,12 +43,10 @@ export default class Contracts{
             }
           }
         }`,
-        {
-          sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI'],
-        },
-        );
-        return new Set(res.map((r) => (
-          r.node.id
-        )));
-      };
+      {
+        sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI'],
+      },
+    );
+    return new Set(res.map((r) => r.node.id));
+  }
 }

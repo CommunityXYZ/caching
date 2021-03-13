@@ -3,9 +3,10 @@ import { run } from 'ar-gql';
 import Arweave from 'arweave';
 import { readContract } from 'smartweave';
 import Caching from '../models/cache';
-import Contracts from '../controllers/contracts'
+import Contracts from '../controllers/contracts';
 
 const cache = new Caching();
+const contracts = new Contracts();
 
 export default class ContractController {
   path = '/contract';
@@ -32,12 +33,10 @@ export default class ContractController {
       return res.redirect('/');
     }
 
-    const contracts= new Contracts();
-    
-    if(await contracts.isValid(contractId)===false){
-      return res.json({error: true, errorMessage: "This contract doesn't use the source from Community"});
+    if ((await contracts.isValid(contractId)) === false) {
+      return res.json({ error: true, errorMessage: "This contract doesn't use the source from Community" });
     }
-     
+
     const latest = await this.latestInteraction(contractId, height);
 
     const cacheKey = `smartweave-${contractId}-${latest}`;
