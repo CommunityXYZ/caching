@@ -1,12 +1,12 @@
 {
   "name": "caching",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "repository": "https://github.com/CommunityXYZ/caching.git",
   "author": "Cedrik <cedrik.git@tryninja.io>",
   "license": "MIT",
   "engines": {
-    "node": "12.x",
+    "node": ">12.x",
     "yarn": "1.x"
   },
   "scripts": {
