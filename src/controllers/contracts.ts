@@ -20,6 +20,7 @@ export default class Contracts {
   }
 
   async getAllFromSources(): Promise<Set<string>> {
+    try {
     const res = await all(
       `
         query($cursor: String, $sources: [String!]!) {
@@ -48,5 +49,8 @@ export default class Contracts {
       },
     );
     return new Set(res.map((r) => r.node.id));
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
