@@ -17,7 +17,7 @@ const worker = (id: string, disconnect: any) => {
     host: 'arweave.net',
     protocol: 'https',
     port: 443,
-    timeout: 100000
+    timeout: 100000,
   });
 
   const app = new App({

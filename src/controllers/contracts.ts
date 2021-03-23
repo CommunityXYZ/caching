@@ -21,8 +21,8 @@ export default class Contracts {
 
   async getAllFromSources(): Promise<Set<string>> {
     try {
-    const res = await all(
-      `
+      const res = await all(
+        `
         query($cursor: String, $sources: [String!]!) {
           transactions(
             tags: [
@@ -44,11 +44,12 @@ export default class Contracts {
             }
           }
         }`,
-      {
-        sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI'],
-      },
-    );
-    return new Set(res.map((r) => r.node.id));
+        {
+          sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI'],
+        },
+      );
+
+      return new Set(res.map((r) => r.node.id));
     } catch (e) {
       console.log(e);
     }
