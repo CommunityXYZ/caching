@@ -54,6 +54,8 @@
     "morgan": "^1.10.0",
     "smartweave": "^0.4.25",
     "tedis": "^0.1.12",
-    "throng": "^5.0.0"
+    "threads": "^1.6.3",
+    "throng": "^5.0.0",
+    "tiny-worker": "^2.3.0"
   }
 }
