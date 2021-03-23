@@ -13,10 +13,12 @@ export default class ContractController {
   router = express.Router();
 
   private arweave: Arweave;
+  private height: number;
 
   constructor(arweaveInstance: Arweave) {
     this.arweave = arweaveInstance;
     this.initRoutes();
+    this.updateHeight();
   }
 
   private initRoutes() {
@@ -26,8 +28,12 @@ export default class ContractController {
   }
 
   private async index(req: express.Request, res: express.Response) {
+    let height = +(req.params.height || this.height);
+    if (!height || height < 0) {
+      this.updateHeight(false);
+      height = this.height;
+    }
     const contractId = req.params.contractId;
-    const height = +(req.params.height || (await this.arweave.network.getInfo()).height);
 
     if (!contractId || !/[a-z0-9_-]{43}/i.test(contractId)) {
       return res.redirect('/');
@@ -92,5 +98,15 @@ export default class ContractController {
         },
       )
     ).data.transactions.edges[0]?.node.id;
+  }
+
+  async updateHeight(sync = true) {
+    try {
+      this.height = +(await this.arweave.network.getInfo()).height;
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (sync) setTimeout(() => this.updateHeight(), 2 * 60000);
   }
 }
