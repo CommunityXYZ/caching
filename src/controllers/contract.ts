@@ -3,7 +3,7 @@ import Arweave from 'arweave';
 import { readContract } from 'smartweave';
 import Caching from '../models/cache';
 import Contracts from '../controllers/contracts';
-import {spawn, Thread, Worker} from 'threads';
+import { spawn, Thread, Worker } from 'threads';
 
 const cache = new Caching();
 const contracts = new Contracts();
@@ -70,11 +70,15 @@ export default class ContractController {
       }
     }
 
-    const state = await this.workers.getContractState({
-      host: this.arweave.getConfig().api.host,
-      port: this.arweave.getConfig().api.port,
-      protocol: this.arweave.getConfig().api.protocol
-    },contractId, height);
+    const state = await this.workers.getContractState(
+      {
+        host: this.arweave.getConfig().api.host,
+        port: this.arweave.getConfig().api.port,
+        protocol: this.arweave.getConfig().api.protocol,
+      },
+      contractId,
+      height,
+    );
     cache.set(cacheKey, JSON.stringify({ latest, state })).catch((e) => console.log(e));
 
     console.log('Not from cache!');

@@ -32,13 +32,17 @@ expose({
       )
     ).data.transactions.edges[0]?.node.id;
   },
-  getContractState: async (arweaveConfig: {host: string, port: number, protocol: string}, contractId: string, height: number) => {
-    const {host, port, protocol} = arweaveConfig;
+  getContractState: async (
+    arweaveConfig: { host: string; port: number; protocol: string },
+    contractId: string,
+    height: number,
+  ) => {
+    const { host, port, protocol } = arweaveConfig;
     const arweave = Arweave.init({
       host,
       port,
-      protocol
+      protocol,
     });
     return readContract(arweave, contractId, height);
-  }
+  },
 });

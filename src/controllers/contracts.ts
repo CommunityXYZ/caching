@@ -45,7 +45,7 @@ export default class Contracts {
           }
         }`,
         {
-          sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI'],
+          sources: ['ngMml4jmlxu0umpiQCsHgPX2pb_Yz6YDB8f7G6j-tpI', '40tPvYdnGiSpwgnqrS2xJ2dqSvA6h8K11HjJxMs1cbI'],
         },
       );
 
